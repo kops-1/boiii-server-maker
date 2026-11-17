@@ -1,0 +1,26 @@
+# Build output
+/target/
+# Installer built by `cargo xtask package` (upload it as a release file instead)
+/dist/
+/release/
+
+# Local runtime data and test output
+/data/
+/portable.txt
+/docs/menu-selftest/console.txt
+*.log
+*.dmp
+
+# Secrets and local editor/OS files
+.env
+.env.*
+!.env.example
+.vs/
+.idea/
+*.user
+*.suo
+*.swp
+*.tmp
+Thumbs.db
+Desktop.ini
+.DS_Store

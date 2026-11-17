@@ -1,0 +1,13 @@
+[workspace]
+resolver = "2"
+members = ["crates/bsm-core", "crates/bsm-app", "crates/bsm-setup", "xtask"]
+
+[workspace.package]
+version = "0.51.0"
+edition = "2021"
+license = "MIT"
+
+[profile.release]
+opt-level = "s"
+lto = "thin"
+strip = true

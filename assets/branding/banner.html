@@ -1,0 +1,147 @@
+<!doctype html>
+<!--
+  GitHub banner / social preview for Boiii Server Maker (1280 x 640).
+  Rendered to banner.png and social-preview.png by render.py.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Boiii Server Maker banner</title>
+<style>
+  :root {
+    --bg: #0E121A;
+    --card: #1B212C;
+    --field: #262E3D;
+    --line: #3A4458;
+    --ink: #E8ECF2;
+    --muted: #96A0B0;
+    --accent: #3A86FF;
+    --good: #34C77B;
+    --good-button: #1E9658;
+    --bad: #EB5757;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1280px; height: 640px; overflow: hidden; background: var(--bg); }
+  body {
+    font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+    color: var(--ink);
+    position: relative;
+    background:
+      radial-gradient(700px 480px at 12% 8%, rgba(58, 134, 255, 0.22), transparent 70%),
+      radial-gradient(620px 420px at 92% 96%, rgba(52, 199, 123, 0.14), transparent 70%),
+      var(--bg);
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1.2px, transparent 1.2px);
+    background-size: 28px 28px;
+    mask-image: linear-gradient(100deg, rgba(0,0,0,0.9), rgba(0,0,0,0.15) 70%);
+  }
+  .layout {
+    position: relative;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 100%; padding: 0 88px;
+  }
+
+  /* Left column: name and pitch */
+  .pitch { width: 600px; }
+  .brand { display: flex; align-items: center; gap: 22px; margin-bottom: 30px; }
+  .brand img { width: 112px; height: 112px; }
+  .brand .eyebrow { font-size: 17px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+  .brand .version { font-size: 16px; color: var(--muted); margin-top: 4px; }
+  h1 { font-size: 66px; line-height: 1.02; font-weight: 700; letter-spacing: -0.02em; color: #fff; }
+  .tagline { margin-top: 18px; font-size: 25px; line-height: 1.38; color: var(--muted); font-family: "Segoe UI Variable Text", "Segoe UI", sans-serif; }
+  .tagline strong { color: var(--ink); font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .chip {
+    font-size: 16px; font-weight: 600; padding: 8px 15px; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.10);
+    color: var(--ink);
+  }
+
+  /* Right column: a sketch of the app window */
+  .window {
+    width: 470px; border-radius: 18px; overflow: hidden;
+    background: var(--card); border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 0, 0, 0.4);
+    transform: perspective(1400px) rotateY(-9deg) rotateX(3deg);
+  }
+  .titlebar { display: flex; align-items: center; gap: 8px; padding: 13px 16px; background: #141922; }
+  .titlebar span { width: 11px; height: 11px; border-radius: 50%; background: var(--line); }
+  .titlebar p { margin-left: 8px; font-size: 13px; color: var(--muted); }
+  .body { display: flex; }
+  .nav { width: 118px; padding: 16px 10px; background: #0D1017; display: flex; flex-direction: column; gap: 6px; }
+  .nav b { font-size: 19px; color: var(--accent); padding: 0 8px 10px; }
+  .nav i { font-style: normal; font-size: 14px; padding: 7px 10px; border-radius: 7px; color: var(--muted); }
+  .nav i.on { background: #22365C; color: #fff; font-weight: 600; }
+  .content { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .status { background: var(--field); border-radius: 12px; padding: 14px; }
+  .status h2 { font-size: 18px; color: #fff; }
+  .status .state { display: flex; align-items: center; gap: 8px; margin-top: 5px; font-size: 12.5px; color: var(--muted); }
+  .status .state em { font-style: normal; font-weight: 700; color: var(--good); letter-spacing: 0.04em; }
+  .status .state::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--good); box-shadow: 0 0 10px var(--good); }
+  .buttons { display: flex; gap: 8px; margin-top: 12px; }
+  .btn { font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 7px; color: #fff; background: #323C50; }
+  .btn.play { background: var(--accent); }
+  .btn.stop { background: var(--bad); }
+  .row { display: flex; gap: 12px; }
+  .map { flex: 1; background: var(--field); border-radius: 12px; padding: 12px 14px; }
+  .map small { display: block; font-size: 11.5px; color: var(--muted); }
+  .map p { font-size: 14px; margin-top: 3px; }
+  .bar { height: 7px; border-radius: 4px; background: var(--line); margin-top: 9px; }
+  .bar.short { width: 60%; }
+  .players { background: var(--field); border-radius: 12px; padding: 12px 14px; }
+  .players div { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; color: var(--muted); }
+  .players div b { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="layout">
+    <section class="pitch">
+      <div class="brand">
+        <img src="icon.svg" alt="">
+        <div>
+          <div class="eyebrow">Open source &middot; Windows</div>
+          <div class="version">Rust desktop app &middot; MIT License</div>
+        </div>
+      </div>
+      <h1>Boiii Server Maker</h1>
+      <p class="tagline">Host <strong>Black Ops III Zombies</strong> dedicated servers in a few clicks. Set up, start, and invite friends from one app.</p>
+      <div class="chips">
+        <span class="chip">Automatic setup</span>
+        <span class="chip">Workshop maps &amp; mods</span>
+        <span class="chip">Map rotation</span>
+        <span class="chip">In-game menu</span>
+        <span class="chip">Saves &amp; scoreboard</span>
+      </div>
+    </section>
+
+    <aside class="window" aria-hidden="true">
+      <div class="titlebar"><span></span><span></span><span></span><p>Boiii Server Maker</p></div>
+      <div class="body">
+        <nav class="nav">
+          <b>Boiii</b>
+          <i class="on">Host</i><i>Cheats</i><i>Friends</i><i>Setup</i><i>Scores</i><i>Log</i>
+        </nav>
+        <div class="content">
+          <div class="status">
+            <h2>Friday Night Zombies</h2>
+            <div class="state"><em>RUNNING</em> 3/4 players &middot; UDP 27017</div>
+            <div class="buttons"><span class="btn stop">Stop server</span><span class="btn play">Play</span><span class="btn">Copy invite</span></div>
+          </div>
+          <div class="row">
+            <div class="map"><small>Map</small><p>Der Eisendrache</p><div class="bar"></div><div class="bar short"></div></div>
+            <div class="map"><small>Rotation</small><p>3 maps</p><div class="bar short"></div><div class="bar"></div></div>
+          </div>
+          <div class="players">
+            <div><b>Round 27</b><span>best game</span></div>
+            <div><span>Player one</span><span>412 kills</span></div>
+            <div><span>Player two</span><span>388 kills</span></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</body>
+</html>

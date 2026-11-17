@@ -1,0 +1,27 @@
+[package]
+name = "bsm-setup"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+build = "build.rs"
+
+[[bin]]
+name = "bsm-setup-stub"
+path = "src/main.rs"
+
+[dependencies]
+bsm-core = { path = "../bsm-core" }
+winreg = "0.52"
+mslnk = "0.1"
+native-windows-gui = { version = "1.0.13", default-features = false, features = [
+    "file-dialog", "high-dpi", "embed-resource",
+] }
+windows-sys = { version = "0.59", features = [
+    "Win32_Foundation",
+    "Win32_UI_Shell",
+    "Win32_System_Com",
+] }
+
+[build-dependencies]
+embed-manifest = "1.4"
+winresource = "0.1.34"

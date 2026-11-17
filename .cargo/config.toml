@@ -1,0 +1,8 @@
+# Link the C runtime statically so the programs run on a PC without the
+# Visual C++ redistributable installed.
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]
+
+[alias]
+# `cargo xtask package` builds everything and writes dist\BoiiiServerMakerSetup.exe
+xtask = "run --release -p xtask --"
