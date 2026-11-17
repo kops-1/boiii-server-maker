@@ -1,7 +1,11 @@
 //! Build helper: `cargo xtask package`
 //!
-//! Builds the release programs and produces `dist\BoiiiServerMakerSetup.exe`:
-//! the setup program with a zip of the files to install appended to it.
+//! Builds the release programs and produces, in `dist\`:
+//!
+//! * `BoiiiServerMakerSetup.exe`: the setup program with a zip of the files
+//!   to install appended to it.
+//! * `BoiiiServerMaker-portable.zip`: the same files to unpack anywhere.
+//!
 //! The installer contains only this project's own programs and a readme.
 //! No game files, no BOIII client.
 
@@ -18,6 +22,7 @@ const PROGRAMS: [(&str, &str); 3] = [
 ];
 const STUB: &str = "bsm-setup-stub.exe";
 const OUTPUT: &str = "BoiiiServerMakerSetup.exe";
+const PORTABLE_OUTPUT: &str = "BoiiiServerMaker-portable.zip";
 
 fn main() {
     let task = std::env::args().nth(1).unwrap_or_default();
@@ -83,31 +88,21 @@ fn package(output: &str) -> Result<(), String> {
             }
         }
     }
-    let mut zip_bytes = Cursor::new(Vec::new());
-    {
-        let mut zip = zip::ZipWriter::new(&mut zip_bytes);
-        let opt =
-            zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated);
-        for (name, built) in PROGRAMS {
-            let path = release.join(built);
-            let bytes = fs::read(&path).map_err(|e| format!("{}: {e}", path.display()))?;
-            zip.start_file(name, opt).map_err(|e| e.to_string())?;
-            zip.write_all(&bytes).map_err(|e| e.to_string())?;
-            println!("  + {name} ({} KB)", bytes.len() / 1024);
-        }
-        let readme = root.join("installer").join("README.txt");
-        let bytes = fs::read(&readme).map_err(|e| format!("{}: {e}", readme.display()))?;
-        zip.start_file("README.txt", opt).map_err(|e| e.to_string())?;
-        zip.write_all(&bytes).map_err(|e| e.to_string())?;
-        println!("  + README.txt");
-        zip.finish().map_err(|e| e.to_string())?;
-    }
-    let zip_bytes = zip_bytes.into_inner();
+    println!("Installer files:");
+    let zip_bytes = zip_programs(&root, &release, Layout::Installer)?;
 
     let stub_path = release.join(STUB);
     let stub = fs::read(&stub_path).map_err(|e| format!("{}: {e}", stub_path.display()))?;
     let dist = root.join("dist");
     fs::create_dir_all(&dist).map_err(|e| e.to_string())?;
+
+    // The portable version: the same programs in a folder, plus `portable.txt`,
+    // which makes them keep their data in a `data` folder beside them.
+    let portable = dist.join(PORTABLE_OUTPUT);
+    let portable_bytes = zip_programs(&root, &release, Layout::Portable)?;
+    fs::write(&portable, &portable_bytes).map_err(|e| format!("{}: {e}", portable.display()))?;
+    println!("Portable zip written: {} ({} KB)", portable.display(), portable_bytes.len() / 1024);
+
     let out = dist.join(output);
     bsm_core::payload::write_installer(&stub, &zip_bytes, &out)
         .map_err(|e| format!("{}: {e}", out.display()))?;
@@ -120,4 +115,45 @@ fn package(output: &str) -> Result<(), String> {
     let size = fs::metadata(&out).map(|m| m.len()).unwrap_or(0);
     println!("Installer written: {} ({} KB)", out.display(), size / 1024);
     Ok(())
+}
+
+/// How the shipped files are arranged inside a zip.
+#[derive(Clone, Copy, PartialEq)]
+enum Layout {
+    /// Files at the top level; the installer unpacks them into the chosen folder.
+    Installer,
+    /// Everything inside a `BoiiiServerMaker` folder, plus the portable marker.
+    Portable,
+}
+
+/// Zips the release programs and the user guide.
+fn zip_programs(root: &Path, release: &Path, layout: Layout) -> Result<Vec<u8>, String> {
+    let folder = match layout {
+        Layout::Installer => "",
+        Layout::Portable => "BoiiiServerMaker/",
+    };
+    let mut files: Vec<(String, Vec<u8>)> = Vec::new();
+    for (name, built) in PROGRAMS {
+        let path = release.join(built);
+        files.push((name.to_string(), fs::read(&path).map_err(|e| format!("{}: {e}", path.display()))?));
+    }
+    let readme = root.join("installer").join("README.txt");
+    files.push(("README.txt".into(), fs::read(&readme).map_err(|e| format!("{}: {e}", readme.display()))?));
+    if layout == Layout::Portable {
+        files.push(("portable.txt".into(), Vec::new()));
+    }
+
+    let mut zip_bytes = Cursor::new(Vec::new());
+    let mut zip = zip::ZipWriter::new(&mut zip_bytes);
+    let options =
+        zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated);
+    for (name, bytes) in &files {
+        zip.start_file(format!("{folder}{name}"), options).map_err(|e| e.to_string())?;
+        zip.write_all(bytes).map_err(|e| e.to_string())?;
+        if layout == Layout::Installer {
+            println!("  + {name} ({} KB)", bytes.len() / 1024);
+        }
+    }
+    zip.finish().map_err(|e| e.to_string())?;
+    Ok(zip_bytes.into_inner())
 }
